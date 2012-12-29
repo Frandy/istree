@@ -8,6 +8,22 @@
 #ifndef STREE_H_
 #define STREE_H_
 
+#include <string>
+using std::string;
+using std::u16string;
+#include <list>
+using std::list;
+#include <vector>
+using std::vector;
+#include <deque>
+using std::deque;
+
+#include <cstddef>
+
+#include <utility>
+using std::pair;
+using std::make_pair;
+
 typedef int ValueType;
 
 class Symbol
@@ -136,7 +152,8 @@ public:
 	STNode* pZero;
 	Symbol* sOne;
 	Symbol* sZero;
-	vector<Symbol*> symbs;
+//	vector<Symbol*> symbs;
+	deque<Symbol*> symbs;
 	list<STNode*> nodes;
 
 	typedef STHashMap<EGraph*,STNode*> SharedGraphNodeMapT;
@@ -162,14 +179,14 @@ public:
 
 	void PrintAllPath();
 	void PrintPathTerm(list<STNode*>& paths);
-	void CollectPathTermR(STNode* cn, list<ESTNode*>& paths,int& cnt);
+	void CollectPathTermR(STNode* cn, list<STNode*>& paths,int& cnt);
 
 	void PrintTerm();
 	void PrintTermR(STNode* cn);
 
 	// non-recursive method (no need for visit mark)
 	void ReduceN();
-	void ReduceNodeN();
+	void ReduceNodeN(STNode* cn,SharedTripleMapT& sharedTripleMap);
 	void ZSuppressN();
 	void ZSuppressNodeN(STNode* cn);
 

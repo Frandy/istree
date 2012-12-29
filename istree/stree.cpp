@@ -5,6 +5,10 @@
  *      Author: chjd
  */
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "stree.h"
 
 void STree::InitOneZero()
@@ -45,16 +49,16 @@ void STree::CollectPathTermR(STNode* cn, list<STNode*>& paths,int& cnt)
 		PrintPathTerm(paths);
 		cnt++;
 	}
-	else if (cn->eindex == 0)
+	else if (cn->index == 0)
 	{
 		return;
 	}
 	else
 	{
 		paths.push_back(cn);
-		CollectTermR(cn->pl, paths,cnt);
+		CollectPathTermR(cn->pl, paths,cnt);
 		paths.pop_back();
-		CollectTermR(cn->pr, paths,cnt);
+		CollectPathTermR(cn->pr, paths,cnt);
 	}
 }
 
@@ -84,7 +88,7 @@ void STree::PrintTermR(STNode* cn)
 	cout << symbs[cn->index]->name << " ";
 	if(cn->pl->index !=1)
 	{
-		out << ".";
+		cout << ".";
 		PrintTermR(cn->pl);
 	}
 	if(cn->pr->index!=0)
@@ -92,7 +96,7 @@ void STree::PrintTermR(STNode* cn)
 		cout << " + ";
 		PrintTermR(cn->pr);
 	}
-	out << ")";
+	cout << ")";
 }
 
 void STree::PrintTerm()
@@ -119,7 +123,7 @@ pair<size_t,size_t> STree::GCMarkNode()
 		else
 			total++;
 	}
-	return make_pair(total,cnt);
+	return make_pair<size_t,size_t>(total,cnt);
 }
 
 
@@ -157,7 +161,7 @@ void STree::ZSuppressN()
 	cout << "remain node count: " << cnt.first << endl;
 }
 
-void STree::ReduceNodeN(STNode* cn)
+void STree::ReduceNodeN(STNode* cn, SharedTripleMapT& sharedTripleMap)
 {
 	if(cn->pl->mark)
 		cn->pl = cn->pl->tdata.ps;
@@ -182,13 +186,15 @@ void STree::ReduceN()
 {
 	cout << "--- reduce begin..." << endl;
 
+	SharedTripleMapT sharedTripleMap;
+
 #if TDENSEMAP & !TMAP
 	sharedTripleMap.set_empty_key(pZeroESTNode);
 #endif
 
 	for(auto r_it=nodes.rbegin(),r_et=nodes.rend();r_it!=r_et;r_it++)
 	{
-		ReduceNodeN(*r_it);
+		ReduceNodeN(*r_it,sharedTripleMap);
 	}
 
 	sharedTripleMap.clear();
@@ -361,7 +367,7 @@ void STree::ReduceNodeR(STNode* cn, bool visit,SharedTripleMapT& sharedTripleMap
 	{
 		ReduceNodeR(cn->pl,visit,sharedTripleMap);
 		ReduceNodeR(cn->pr,visit,sharedTripleMap);
-		ReduceNodeN(cn);
+		ReduceNodeN(cn,sharedTripleMap);
 		cn->visit = visit;
 	}
 }
@@ -372,6 +378,8 @@ void STree::ReduceR()
 	bool visit = !(root->visit);
 	pZero->visit = visit;
 	pOne->visit = visit;
+
+	SharedTripleMapT sharedTripleMap;
 
 #if TDENSEMAP & !TMAP
 	sharedTripleMap.set_empty_key(pZeroESTNode);
