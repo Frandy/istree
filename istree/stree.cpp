@@ -11,6 +11,9 @@ using std::endl;
 
 #include "stree.h"
 
+/*
+ * initialize the two terminal nodes, one & zero
+ */
 void STree::InitOneZero()
 {
 	sZero = new Symbol(0,0,0,0);
@@ -211,16 +214,14 @@ void STree::CountPathNodeN(STNode* cn)
 
 size_t STree::CountAllPathN()
 {
-	bool visit = !(root->visit);
-	pZero->visit = visit;
-	pOne->visit = visit;
 	pOne->tdata.cnt = 1;
 	pZero->tdata.cnt = 0;
 	for(auto p_it=nodes.rbegin(),p_et=nodes.rend();p_it!=p_et;p_it++)
 	{
 		CountPathNodeN(*p_it);
 	}
-	cout << "total path count: " << (root->tdata.cnt) << endl;
+//	cout << "total path count: " << (root->tdata.cnt) << endl;
+
 	return root->tdata.cnt;
 }
 
@@ -393,5 +394,61 @@ void STree::ReduceR()
 	cout << "reduce node count: " << cnt.second << endl;
 	cout << "remain node count: " << cnt.first << endl;
 }
+
+void STree::CountPathNodeR(STNode* cn,bool visit)
+{
+	if(cn->visit!=visit)
+	{
+		CountPathNodeR(cn->pl,visit);
+		CountPathNodeR(cn->pr,visit);
+		CountPathNodeN(cn);
+		cn->visit = visit;
+	}
+}
+
+size_t STree::CountAllPathR()
+{
+	bool visit = !(root->visit);
+	pZero->visit = visit;
+	pOne->visit = visit;
+	pOne->tdata.cnt = 1;
+	pZero->tdata.cnt = 0;
+
+	CountPathNodeR(root,visit);
+//	cout << "total path count: " << (root->tdata.cnt) << endl;
+
+	return root->tdata.cnt;
+}
+
+
+void STree::BuildKPathNodeR(STNode* cn,bool visit, size_t KN)
+{
+	if(cn->visit!=visit)
+	{
+		BuildKPathNodeR(cn->pl,visit);
+		BuildKPathNodeR(cn->pr,visit);
+		BuildKPathNodeN(cn);
+		cn->visit = visit;
+	}
+}
+
+void STree::BuildKPathR(size_t KN)
+{
+	cout << "--- k-MST begin..." << endl;
+
+	bool visit = !(root->visit);
+	pZero->visit = visit;
+	pOne->visit = visit;
+
+	pOne->tdata.kNode = new vector<STNode*> (1, pOne);
+	(*(pOne->tdata.kNode))[0]->value = 0;
+	pZero->tdata.kNode = new vector<STNode*> (1, pZero);
+	(*(pZero->tdata.kNode))[0]->value = 0;
+
+	BuildKPathNodeR(root, visit, KN);
+
+	cout << "... k-MST done." << endl;
+}
+
 
 /**@} end of recursive methods */

@@ -8,59 +8,10 @@
 #ifndef STREE_H_
 #define STREE_H_
 
-#include <string>
-using std::string;
-using std::u16string;
-#include <list>
-using std::list;
-#include <vector>
-using std::vector;
-#include <deque>
-using std::deque;
+#include "stdafx.h"
 
-#include <cstddef>
+#include "symbol.h"
 
-#include <utility>
-using std::pair;
-using std::make_pair;
-
-typedef int ValueType;
-
-class Symbol
-{
-public:
-	int index;
-	int vp;
-	int vn;
-	ValueType value;
-	string name;
-public:
-	Symbol(int id,int p,int n,ValueType v=ValueType()):index(id),vp(p),vn(n),value(v){}
-	Symbol(Symbol& symb)
-	{
-		index = symb.index;
-		vp = symb.vp;
-		vn = symb.vn;
-		value = symb.value;
-		name = symb.name;
-	}
-};
-
-class Edge
-{
-public:
-	int index;
-	int vp;
-	int vn;
-};
-
-class EGraph
-{
-public:
-	size_t edgenum;
-	size_t vertexnum;
-	list<Edge> edges;
-};
 
 class STNode
 {
@@ -146,13 +97,13 @@ typedef unordered_map STHashMap;
 
 class STree
 {
-public:
-	STNode* root;
+private:
 	STNode* pOne;
 	STNode* pZero;
 	Symbol* sOne;
 	Symbol* sZero;
-//	vector<Symbol*> symbs;
+public:
+	STNode* root;
 	deque<Symbol*> symbs;
 	list<STNode*> nodes;
 
@@ -163,6 +114,9 @@ public:
 
 	void Init();
 	void InitRoot();
+	/// initialize the symbol list, including 1 & 0
+	void InitSymb(vector<Symbol*>& symbList);
+	/// initialize the two terminal nodes, one & zero
 	void InitOneZero();
 	void SpanBFS();
 	void SpanDFS();
@@ -171,33 +125,64 @@ public:
 
 	pair<size_t,size_t> GCMarkNode();
 
-	void ReduceR();		// recursive
+	// recursive methods
+	/// reduce recursively, begin from the root
+	void ReduceR();
+	/// reduce for the current node, recursively
 	void ReduceNodeR(STNode* cn, bool visit,SharedTripleMapT& sharedTripleMap);
 
-	void ZSuppressR();	// recursive
+	/// zero suppress recursively, begin from the root
+	void ZSuppressR();
+	/// zero suppress for the current node, recursively
 	void ZSuppressNodeR(STNode* cn, bool visit);
 
+	/// count the number of spanning trees or paths recursively, begin from the root
+	size_t CountAllPathR(bool print=false);
+	/// count the paths for the current node, recursively
+	void CountPathNodeR(STNode* cn,bool visit);
+
+	/// build the k-MST recursively, begin from the root
+	void BuildKPathR(size_t KN);
+	/// build the k-MST for the current node, recursively
+	void BuildKPathNodeR(STNode* cn,bool visit, size_t KN);
+
+	/// print all the paths, begin from the root
 	void PrintAllPath();
+	/// print all the node in the path list
 	void PrintPathTerm(list<STNode*>& paths);
+	/// collect nodes on the path recursively
 	void CollectPathTermR(STNode* cn, list<STNode*>& paths,int& cnt);
 
+	/// print the k-MST path, from the kNode in the root
+	void PrintKPath();
+
+	/// print the expression or structure of the stree, begin from the root
 	void PrintTerm();
+	/// print the expression for the current node, recursively
 	void PrintTermR(STNode* cn);
 
 	// non-recursive method (no need for visit mark)
+	/// reduce non-recursively, by reversely traverse the list of all nodes
 	void ReduceN();
+	/// reduce for the current node
 	void ReduceNodeN(STNode* cn,SharedTripleMapT& sharedTripleMap);
+
+	/// zero suppress non-recursively, by reversely traverse the list of all nodes
 	void ZSuppressN();
+	/// zero suppress for the current node
 	void ZSuppressNodeN(STNode* cn);
 
-	size_t CountAllPathN();
+	/// count the number of paths or spanning trees non-recursively, by reversely traverse the list of all nodes
+	size_t CountAllPathN(bool print=false);
+	/// count paths for the current node
 	void CountPathNodeN(STNode* cn);
 
+	/// build the k-MST non-recursively, by reversely traverse the list of all nodes
 	void BuildKPathN(size_t KN);
-	void BuildKPathNodeR(STNode* cn);
-	void BuildKPathNodeN(STNode* cn,size_t K);
-	void PrintKPath();
+	/// build k-MST for the current node
+	void BuildKPathNodeN(STNode* cn,size_t KN);
 
+	/// construct the stree, zero suppress and reduce
 	void Build();
 };
 
