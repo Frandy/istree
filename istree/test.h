@@ -15,7 +15,7 @@
 
 bool readGraph(string fname, vector<Symbol*>& symbs)
 {
-	ifstream fp(name.c_str());
+	ifstream fp(fname.c_str());
 	string ename, p, n;
 	ValueType v = ValueType(0);
 
@@ -34,7 +34,7 @@ bool readGraph(string fname, vector<Symbol*>& symbs)
 			break;
 		lcnt++;
 
-		auto eit = eIndex.insert(make_pair(ename, lcnt));
+		auto eit = eIndex.insert(pair<string,int>(ename, lcnt));
 		if (!eit.second)
 		{
 			cerr << "error input at line " << lcnt << ": " << ename << ", collision at line " << eit.first->second << endl;
@@ -48,6 +48,11 @@ bool readGraph(string fname, vector<Symbol*>& symbs)
 
 	fp.close();
 	return flag;
+}
+
+void InitSymb(vector<Symbol*>& symbs,size_t& edgenum,size_t& vertexnum)
+{
+
 }
 
 void createGraph(vector<Symbol*>& symbs,int vertexnum, int edgenum, EGraph* graph)

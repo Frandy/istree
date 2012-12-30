@@ -15,6 +15,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::cerr;
 
 #include <fstream>
 using std::ifstream;
@@ -33,11 +34,21 @@ using std::vector;
 #include <deque>
 using std::deque;
 
+#include <unordered_map>
+using std::unordered_map;
+
+#include <map>
+using std::map;
+
 #include <cstddef>
 
 #include <utility>
 using std::pair;
 using std::make_pair;
+
+
+#include <algorithm>
+using std::sort;
 
 
 

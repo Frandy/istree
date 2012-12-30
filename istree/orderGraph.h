@@ -33,7 +33,7 @@ public:
 		{
 			list<Symbol*> tmp;
 			tmp.push_back(symb);
-			vertexs.insert(make_pair(s, tmp));
+			vertexs.insert(pair<string,list<Symbol*> >(s, tmp));
 		}
 		else
 		{
@@ -54,13 +54,13 @@ public:
 
 	void FindMinDeg(vit_t& mit)
 	{
-		mit =  it=vertexs.begin();
+		mit = vertexs.begin();
 		size_t m_deg = mit->second.size();
 		auto it = mit;
 		it++;
 		for(auto et=vertexs.end();it!=et;it++)
 		{
-			size_t t_deg = it->second.szie();
+			size_t t_deg = it->second.size();
 			if(t_deg < m_deg)
 			{
 				mit = it;
@@ -77,7 +77,7 @@ public:
 		{
 			vit_t mit;
 			FindMinDeg(mit);
-			vIndex.insert(make_pair(mit->first,vn));
+			vIndex.insert(pair<string,int>(mit->first,vn));
 			vn--;
 
 			typedef pair<size_t,Symbol*> localNode;
@@ -90,7 +90,7 @@ public:
 					s = symb->sn;
 				list<Symbol*>& tmp_symbs = vertexs[s];
 				tmp_symbs.remove(symb);
-				localOrder.push_back(tmp_symbs.size(),symb);
+				localOrder.push_back(pair<size_t,Symbol*>(tmp_symbs.size(),symb));
 			}
 			vertexs.erase(mit);
 

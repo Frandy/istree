@@ -26,11 +26,5 @@ public:
 	list<Edge> edges;
 };
 
-class NGraph
-{
-public:
-	vector<Edge> edges;
-	unordered_map<int,list<int> > vertexs;
-};
 
 #endif /* GRAPH_H_ */

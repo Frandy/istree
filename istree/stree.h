@@ -11,7 +11,7 @@
 #include "stdafx.h"
 
 #include "symbol.h"
-
+#include "graph.h"
 
 class STNode
 {
