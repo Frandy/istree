@@ -16,6 +16,7 @@
 using std::cout;
 using std::endl;
 using std::cerr;
+using std::ostream;
 
 #include <fstream>
 using std::ifstream;
@@ -42,6 +43,8 @@ using std::map;
 
 #include <cstddef>
 
+#include <cassert>
+
 #include <utility>
 using std::pair;
 using std::make_pair;
@@ -49,7 +52,10 @@ using std::make_pair;
 
 #include <algorithm>
 using std::sort;
-
-
+using std::find_if;
+using std::swap;
+using std::min;
+using std::for_each;
+using std::hash;
 
 #endif /* STDAFX_H_ */

@@ -25,7 +25,13 @@ private:
 	unordered_map<string, int> vIndex;
 	typedef typename unordered_map<string,list<Symbol*> >::iterator vit_t;
 public:
-	OrderGraph(vector<Symbol*>& symbs):symbs(symbs){}
+	void operator()(vector<Symbol*>& symb,EGraph* graph)
+	{
+		symbs = symb;
+		Init();
+		ReOrder();
+		CreateGraph(graph);
+	}
 	void AddVertex(string& s,Symbol* symb)
 	{
 		auto it = vertexs.find(s);
@@ -42,14 +48,14 @@ public:
 	}
 	void Init()
 	{
-		for(auto it=symbs.begin(),et=symbs.end();it!=et;it++)
+		for(size_t it=2,et=symbs.size();it<et;it++)
 		{
-			Symbol* symb = *it;
+			Symbol* symb = symbs[it];
 			AddVertex(symb->sp,symb);
 			AddVertex(symb->sn,symb);
 		}
 		vertexnum = vertexs.size();
-		edgenum = symbs.size();
+		edgenum = symbs.size()-2;
 	}
 
 	void FindMinDeg(vit_t& mit)
@@ -98,15 +104,17 @@ public:
 			sort(localOrder.begin(),localOrder.end(),localNodeLess);
 			for(auto l_it=localOrder.begin(),l_et=localOrder.end();l_it!=l_et;l_it++)
 			{
-				l_it->second->ei = ek++;
+				l_it->second->ei = ek;
+				symbs[ek] = l_it->second;
+				ek++;
 			}
 		}
 	}
 	void CreateGraph(EGraph* graph)
 	{
-		for(auto e_it=symbs.begin(),e_et=symbs.end();e_it!=e_et;e_it++)
+		for(size_t e_it=2,e_et=symbs.size();e_it<e_et;e_it++)
 		{
-			Symbol* symb = *e_it;
+			Symbol* symb = symbs[e_it];
 			symb->vp = vIndex[symb->sp];
 			symb->vn = vIndex[symb->sn];
 			graph->edges.push_back(Edge(symb->ei,symb->vp,symb->vn));

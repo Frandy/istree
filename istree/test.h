@@ -23,6 +23,11 @@ bool readGraph(string fname, vector<Symbol*>& symbs)
 	int lcnt = 0;
 	bool flag = true;
 
+	Symbol* sZero = new Symbol(0,0,0,0);
+	symbs.push_back(sZero);
+	Symbol* sOne = new Symbol(1,0,0,0);
+	symbs.push_back(sOne);
+
 	while (true)
 	{
 #if EN_SYMB_VALUE
@@ -50,10 +55,7 @@ bool readGraph(string fname, vector<Symbol*>& symbs)
 	return flag;
 }
 
-void InitSymb(vector<Symbol*>& symbs,size_t& edgenum,size_t& vertexnum)
-{
 
-}
 
 void createGraph(vector<Symbol*>& symbs,int vertexnum, int edgenum, EGraph* graph)
 {
