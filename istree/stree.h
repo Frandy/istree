@@ -41,28 +41,16 @@ public:
 	class WorkLayerT
 	{
 	public:
+		size_t sg_cnt;
+		size_t sn_cnt;
+		size_t tg_cnt;
+		size_t tn_cnt;
 		list<STNode*> cnNodes;
 		SharedGraphMapT sharedGraphs;
 		SharedNodeMapT sharedNodes;
-		size_t sg_cnt = 0;
-		size_t sn_cnt = 0;
-		size_t tg_cnt = 0;
-		size_t tn_cnt = 0;
 	public:
-		WorkLayerT()
-		{
-#if TDENSEMAP
-	EGraph* empty = new EGraph;
-	layer.sharedGraphs.set_empty_key(empty);
-	layer.sharedNodes.set_empty_key(pZero);
-#endif
-		}
-		void Clear()
-		{
-			cnNodes.clear();
-			sharedNodes.clear();
-			ReleaseGraphs(sharedGraphs);
-		}
+		WorkLayerT();
+		void Clear();
 	};
 
 	STree();
@@ -148,13 +136,14 @@ public:
 	void Build();
 
 	/// add new graph & node to layer
-	void AddNewNode(int index, STNode*& node, EGraph*& graph, WorkLayerT& layer);
+	void AddNewNode(int index, STNode*& node, EGraph*& graph,
+			WorkLayerT& layer);
 	/// add left to current node
 	void AddLeft(STNode* cn, WorkLayerT& layer);
 	/// add right to current node
 	void AddRight(STNode* cn, WorkLayerT& layer);
 	/// release graphs memory
-	void ReleaseGraphs(SharedGraphMapT& graphs);
+//	void ReleaseGraphs(SharedGraphMapT& graphs);
 };
 
 #endif /* STREE_H_ */

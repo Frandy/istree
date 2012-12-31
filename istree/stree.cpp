@@ -446,6 +446,28 @@ void STree::BuildKPathR(size_t KN)
 
 /**@{ construction of spanning tree*/
 
+STree::WorkLayerT::WorkLayerT() :
+		sg_cnt(0), sn_cnt(0), tg_cnt(0), tn_cnt(0)
+{
+#if TDENSEMAP
+	EGraph* empty = new EGraph;
+	layer.sharedGraphs.set_empty_key(empty);
+	layer.sharedNodes.set_empty_key(pZero);
+#endif
+}
+
+void STree::WorkLayerT::Clear()
+{
+	cnNodes.clear();
+	sharedNodes.clear();
+	for (auto it = graphs.begin(), et = graphs.end(); it != et; it++)
+	{
+		delete (it->second);
+		//	(it->second) = nullptr;
+	}
+	graphs.clear();
+}
+
 void STree::AddNewNode(int index, STNode*& node, EGraph*& graph,
 		WorkLayerT& layer)
 {
@@ -502,17 +524,6 @@ void STree::AddRight(STNode* cn, WorkLayerT& layer)
 	}
 }
 
-void STree::ReleaseGraphs(SharedGraphMapT& graphs)
-{
-	for (auto it = graphs.begin(), et = graphs.end(); it != et; it++)
-	{
-		delete (it->second);
-	//	(it->second) = nullptr;
-	}
-	graphs.clear();
-}
-
-
 void STree::SpanBFS()
 {
 	cout << "---BFS build begin..." << endl;
@@ -522,7 +533,7 @@ void STree::SpanBFS()
 
 	while (!layer.cnNodes.empty())
 	{
-		ESTNode* cn = layer.cnNodes.front();
+		STNode* cn = layer.cnNodes.front();
 		AddLeft(cn, layer);
 		AddRight(cn, layer);
 		layer.cnNodes.pop_front();

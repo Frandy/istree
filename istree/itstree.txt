@@ -1,0 +1,26 @@
+design guide
+
+first, read symbols from file, get the vector symbs,
+	each symbol has its name, two vertex names, and value;
+	the first two symbols in the vector symbs is sZero & sOne.
+	
+adjust the order of symbs, this as independent step, instead inner stree.
+	
+secondly, stree initialize with symbs
+	and initialize the root node, with initial graph
+	and initialize the two terminal stnode pZero & pOne.
+	
+thirdly, build in some way.
+	Span, third methods, BFS, BFS layer to layer, & DFS
+	Zero suppress, recursive or non-recursive
+	Reduce, recursive or non-recursive
+	
+	some macros are needed to control these selection.
+	and control print of statistics infomation, count & timing
+	
+then, test the result of different orders
+
+to create graph from symbs, it need make the symb indexed. this should 
+also be done independentl
+
+finally, test k-MST method.
