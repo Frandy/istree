@@ -53,11 +53,7 @@ void STree::PrintPathTerm(list<STNode*>& paths)
 {
 	for (auto it = paths.begin(), et = paths.end(); it != et; it++)
 	{
-//#if PRINT_SYMBOL_NAME
 		cout << symbs[(*it)->index]->name << "\t";
-//#elif PRINT_SYMBOL_INDEX
-	//	cout << (*it)->index << "\t";
-//#endif
 	}
 	cout << endl;
 }
@@ -192,8 +188,11 @@ void STree::ZSuppressN()
 	pOne->mark = false;
 	pair<size_t, size_t> cnt = GCMarkNode();
 	cout << "... zero suppress done." << endl;
+
+#if STAT_PRINT_ON
 	cout << "zero suppressed node count: " << cnt.second << endl;
 	cout << "remain node count: " << cnt.first << endl;
+#endif
 /*
 	cout << "after zero suppress: " << endl;
 	for(auto it = nodes.begin(), et = nodes.end(); it != et; it++)
@@ -244,8 +243,11 @@ void STree::ReduceN()
 	sharedTripleMap.clear();
 	pair<size_t, size_t> cnt = GCMarkNode();
 	cout << "... reduce done." << endl;
+
+#if STAT_PRINT_ON
 	cout << "reduce node count: " << cnt.second << endl;
 	cout << "remain node count: " << cnt.first << endl;
+#endif
 }
 
 void STree::CountPathNodeN(STNode* cn)
@@ -271,7 +273,7 @@ size_t STree::CountAllPathN()
  */
 void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 {
-	cout << "build k-MST at node: " << symbs[cn->index]->name << endl;
+//	cout << "build k-MST at node: " << symbs[cn->index]->name << endl;
 
 	cn->tdata.kNode = new vector<STNode*> ;
 	ValueType v = symbs[cn->index]->value;
@@ -337,13 +339,14 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 		j++;
 		k++;
 	}
-
+/*
 	cout << "\t";
 	for(auto it=cn->tdata.kNode->begin(),et=cn->tdata.kNode->end();it!=et;it++)
 	{
 		cout << symbs[(*it)->index]->name << "\t";
 	}
 	cout << endl;
+*/
 }
 
 void STree::BuildKPathN(size_t KN)
@@ -354,14 +357,6 @@ void STree::BuildKPathN(size_t KN)
 	(*(pOne->tdata.kNode))[0]->value = 0;
 	pZero->tdata.kNode = new vector<STNode*> (1, pZero);
 	(*(pZero->tdata.kNode))[0]->value = INT_MAX;
-
-	STNode* cn = pOne;
-	cout << "\t";
-	for(auto it=cn->tdata.kNode->begin(),et=cn->tdata.kNode->end();it!=et;it++)
-	{
-		cout << symbs[(*it)->index]->name << "\t";
-	}
-	cout << endl;
 
 	for (auto r_it = nodes.rbegin(), r_et = nodes.rend(); r_it != r_et; r_it++)
 	{
@@ -420,8 +415,11 @@ void STree::ZSuppressR()
 
 	pair<size_t, size_t> cnt = GCMarkNode();
 	cout << "... zero suppress done." << endl;
+
+#if STAT_PRINT_ON
 	cout << "zero suppressed node count: " << cnt.second << endl;
 	cout << "remain node count: " << cnt.first << endl;
+#endif
 }
 
 void STree::ReduceNodeR(STNode* cn, bool visit,
@@ -454,8 +452,12 @@ void STree::ReduceR()
 	sharedTripleMap.clear();
 	pair<size_t, size_t> cnt = GCMarkNode();
 	cout << "... reduce done." << endl;
+
+#if STAT_PRINT_ON
 	cout << "reduce node count: " << cnt.second << endl;
 	cout << "remain node count: " << cnt.first << endl;
+#endif
+
 }
 
 void STree::CountPathNodeR(STNode* cn, bool visit)
@@ -616,15 +618,18 @@ void STree::SpanBFS()
 	layer.Clear();
 
 	cout << "-BFS build done." << endl;
+
+#if STAT_PRINT_ON
 	cout << "shared graph count: " << layer.sg_cnt << "\t";
 	cout << "total graph count:" << layer.tg_cnt << endl;
 	cout << "shared node count: " << layer.sn_cnt << "\t";
 	cout << "total node count: " << layer.tn_cnt << endl;
+#endif
 }
 
 void STree::SpanBFSByLayer()
 {
-	cout << "---BFS build begin..." << endl;
+	cout << "--- BFS build begin..." << endl;
 
 	WorkLayerT layer_0,layer_1;
 	layer_0.cnNodes.push_back(root);
@@ -649,11 +654,14 @@ void STree::SpanBFSByLayer()
 	layer_0.Clear();
 	layer_1.Clear();
 
-	cout << "-BFS build done." << endl;
+	cout << "... BFS build done." << endl;
+
+#if STAT_PRINT_ON
 	cout << "shared graph count: " << layer_0.sg_cnt + layer_1.sg_cnt << "\t";
 	cout << "total graph count:" << layer_0.tg_cnt + layer_1.tg_cnt << endl;
 	cout << "shared node count: " << layer_0.sn_cnt + layer_1.sn_cnt << "\t";
 	cout << "total node count: " << layer_0.tn_cnt + layer_1.tn_cnt << endl;
+#endif
 }
 
 

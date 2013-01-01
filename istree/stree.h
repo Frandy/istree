@@ -15,11 +15,13 @@
 #include "stnode.h"
 #include "triple.h"
 
-#define SPAN_BFS 1
+//#define SPAN_BFS 1
+#define SPAN_BFS_LAYER 1
+
 #define ZS_N 1
 #define REDUCE_N 1
 
-
+#define STAT_PRINT_ON 0
 
 class STree
 {
