@@ -54,45 +54,5 @@ public:
 	}
 };
 
-class TestEGraph
-{
-public:
-	EGraph* graph;
-	void CreateGraph()
-	{
-		graph = new EGraph;
-		graph->vertexnum = 5;
-		graph->edgenum = 8;
-
-		graph->edges.push_back(Edge(2,3,4));
-		graph->edges.push_back(Edge(3,0,4));
-		graph->edges.push_back(Edge(4,2,3));
-		graph->edges.push_back(Edge(5,1,3));
-		graph->edges.push_back(Edge(6,0,3));
-		graph->edges.push_back(Edge(7,1,2));
-		graph->edges.push_back(Edge(8,0,2));
-		graph->edges.push_back(Edge(9,0,1));
-	}
-	void RunTest()
-	{
-		cout << "create graph..." << endl;
-		CreateGraph();
-		cout << "create graph done." << endl;
-		graph->Print();
-		cout << "hash id:" << graph->Hash() << endl;
-
-		graph->Short(2);
-		cout << "after short edge e2:" << endl;
-		graph->Print();
-		cout << "hash id:" << graph->Hash() << endl;
-
-		graph->Open(3);
-		cout << "after open edge e3:" << endl;
-		graph->Print();
-		cout << "hash id:" << graph->Hash() << endl;
-
-		cout << "graph test done." << endl;
-	}
-};
 
 #endif /* GRAPH_H_ */

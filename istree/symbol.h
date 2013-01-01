@@ -10,7 +10,11 @@
 
 #include "stdafx.h"
 
+#define EN_SYMB_VALUE 1
+
 typedef int ValueType;
+
+
 
 class Symbol
 {
@@ -25,14 +29,12 @@ public:
 	int vn;
 public:
 	Symbol()=default;
-	Symbol(string nm,string p,string n,ValueType v=ValueType()):name(nm),sp(p),sn(n),value(v){}
+	Symbol(string nm,string p,string n,ValueType v=ValueType());
 	/// set index for edge, vertexes
-	void Index(int id,int p,int n)
-	{
-		ei = id;
-		vp = p;
-		vn = n;
-	}
+	void Index(int id,int p,int n);
+	void PrintNameIndex();
+	void PrintName();
+	void PrintIndex();
 };
 
 

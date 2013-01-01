@@ -9,14 +9,16 @@ OPT = -O3
 
 #PROFILE = -pg 
 
+INCLUDE = -I . -I ./unitest
+
 CFLAGS = $(OPT) $(PROFILE) -Wall -std=c++0x -I $(CPP_INCLUDE_PATH)
 LFLAGS = $(OPT) $(PROFILE) -std=c++0x -L $(CPP_LIBRARY_PATH) 
 
-
-INCLUDE = -I .
 		  
 SOURCES = 	graph.cpp \
-			edge.cpp 
+			edge.cpp \
+			symbol.cpp \
+			symbFromFile.cpp 
 			
 TEST_MAIN = main.cpp
 

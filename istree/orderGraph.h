@@ -13,26 +13,25 @@
 #include "symbol.h"
 #include "graph.h"
 
+#include "symbFromFile.h"
+
 // reorder both edge & vertex
 
 class OrderGraph
 {
 private:
-	size_t edgenum;
-	size_t vertexnum;
-	vector<Symbol*>& symbs;
-	unordered_map<string,list<Symbol*> > vertexs;
-	unordered_map<string, int> vIndex;
 	typedef typename unordered_map<string,list<Symbol*> >::iterator vit_t;
 public:
-	void operator()(vector<Symbol*>& symb,EGraph* graph)
+	void operator()(vector<Symbol*>& symbs)
 	{
-		symbs = symb;
-		Init();
-		ReOrder();
-		CreateGraph(graph);
+		unordered_map<string,list<Symbol*> > vertexs;
+		unordered_map<string, int> vIndex;
+
+		Init(symbs,vertexs);
+		ReOrder(symbs,vertexs,vIndex);
+		ReIndexV(symbs,vIndex);
 	}
-	void AddVertex(string& s,Symbol* symb)
+	void AddVertex(string& s,Symbol* symb, unordered_map<string,list<Symbol*> >& vertexs)
 	{
 		auto it = vertexs.find(s);
 		if (it == vertexs.end())
@@ -46,19 +45,17 @@ public:
 			it->second.push_back(symb);
 		}
 	}
-	void Init()
+	void Init(vector<Symbol*>& symbs, unordered_map<string,list<Symbol*> >& vertexs)
 	{
-		for(size_t it=2,et=symbs.size();it<et;it++)
+		for(size_t i=2,N=symbs.size();i<N;i++)
 		{
-			Symbol* symb = symbs[it];
-			AddVertex(symb->sp,symb);
-			AddVertex(symb->sn,symb);
+			Symbol* symb = symbs[i];
+			AddVertex(symb->sp,symb,vertexs);
+			AddVertex(symb->sn,symb,vertexs);
 		}
-		vertexnum = vertexs.size();
-		edgenum = symbs.size()-2;
 	}
 
-	void FindMinDeg(vit_t& mit)
+	void FindMinDeg(vit_t& mit,unordered_map<string,list<Symbol*> >& vertexs)
 	{
 		mit = vertexs.begin();
 		size_t m_deg = mit->second.size();
@@ -75,14 +72,14 @@ public:
 		}
 	}
 
-	void ReOrder()
+	void ReOrder(vector<Symbol*>& symbs,unordered_map<string,list<Symbol*> >& vertexs,unordered_map<string, int>& vIndex)
 	{
-		int vn = vertexnum - 1;
+		int vn = vertexs.size() - 1;
 		int ek = 2;
 		while(vn>=0)
 		{
 			vit_t mit;
-			FindMinDeg(mit);
+			FindMinDeg(mit,vertexs);
 			vIndex.insert(pair<string,int>(mit->first,vn));
 			vn--;
 
@@ -100,7 +97,7 @@ public:
 			}
 			vertexs.erase(mit);
 
-			auto localNodeLess = [](localNode& a,localNode& b)->bool{return a.first<b.first;};
+			auto localNodeLess = [](const localNode& a,const localNode& b)->bool{return a.first<b.first;};
 			sort(localOrder.begin(),localOrder.end(),localNodeLess);
 			for(auto l_it=localOrder.begin(),l_et=localOrder.end();l_it!=l_et;l_it++)
 			{
@@ -110,17 +107,14 @@ public:
 			}
 		}
 	}
-	void CreateGraph(EGraph* graph)
+	void ReIndexV(vector<Symbol*>& symbs,unordered_map<string, int>& vIndex)
 	{
-		for(size_t e_it=2,e_et=symbs.size();e_it<e_et;e_it++)
+		for(size_t i=2,N=symbs.size();i<N;i++)
 		{
-			Symbol* symb = symbs[e_it];
+			Symbol* symb = symbs[i];
 			symb->vp = vIndex[symb->sp];
 			symb->vn = vIndex[symb->sn];
-			graph->edges.push_back(Edge(symb->ei,symb->vp,symb->vn));
 		}
-		graph->edgenum = edgenum;
-		graph->vertexnum = vertexnum;
 	}
 };
 

@@ -21,6 +21,6 @@ thirdly, build in some way.
 then, test the result of different orders
 
 to create graph from symbs, it need make the symb indexed. this should 
-also be done independentl
+also be done independently
 
 finally, test k-MST method.

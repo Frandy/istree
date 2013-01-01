@@ -119,7 +119,7 @@ size_t EGraph::Hash() const
 	const size_t MAX_LENGTH = 13;
 	string seed_t(min(edgenum + 1,MAX_LENGTH), char(0));
 	seed_t[0] = char(vertexnum + edgenum * 7);
-	int i = 1;
+	size_t i = 1;
 	for (auto it = edges.begin(), et = edges.end(); it != et; it++)
 	{
 		int t = it->index * 11 + it->vp * 5 + it->vn;
