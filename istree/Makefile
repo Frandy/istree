@@ -18,7 +18,9 @@ LFLAGS = $(OPT) $(PROFILE) -std=c++0x -L $(CPP_LIBRARY_PATH)
 SOURCES = 	graph.cpp \
 			edge.cpp \
 			symbol.cpp \
-			symbFromFile.cpp 
+			symbFromFile.cpp \
+			stnode.cpp \
+			stree.cpp 
 			
 TEST_MAIN = main.cpp
 

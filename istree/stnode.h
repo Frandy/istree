@@ -41,4 +41,24 @@ public:
 };
 
 
+class STNodeHash
+{
+public:
+	size_t operator()(const STNode* cn) const
+	{
+		hash<u16string> hashFn;
+		return hashFn(cn->unitag);
+	}
+};
+
+class STNodeEqual
+{
+public:
+	bool operator()(const STNode* a,const STNode* b) const
+	{
+		EGraphEqual geq;
+		return (a->index==b->index) && geq(a->graph,b->graph);
+	}
+};
+
 #endif /* STNODE_H_ */

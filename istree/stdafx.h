@@ -38,6 +38,9 @@ using std::deque;
 #include <unordered_map>
 using std::unordered_map;
 
+#include <sparsehash/dense_hash_map>
+using google::dense_hash_map;
+
 #include <map>
 using std::map;
 
@@ -57,5 +60,8 @@ using std::swap;
 using std::min;
 using std::for_each;
 using std::hash;
+
+#include <limits.h>
+
 
 #endif /* STDAFX_H_ */

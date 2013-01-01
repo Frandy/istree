@@ -5,6 +5,8 @@
  *      Author: chjd
  */
 
+#include "stnode.h"
+
 STNode::STNode(int id, EGraph* g) :
 	index(id), graph(g), pl(nullptr), pr(nullptr), value(ValueType(0)),
 			visit(false), mark(false)

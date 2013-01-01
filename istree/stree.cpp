@@ -11,6 +11,28 @@ using std::endl;
 
 #include "stree.h"
 
+
+STree::~STree()
+{
+	// these two not in the nodes list
+	delete pZero;
+	delete pOne;
+	// symb & graph released by who created them
+}
+
+void STree::Init(vector<Symbol*> symb,EGraph* graph)
+{
+	symbs = symb;
+	InitRoot(graph);
+	InitOneZero();
+}
+
+void STree::InitRoot(EGraph* graph)
+{
+	root = new STNode(2,graph);
+	nodes.push_back(root);
+}
+
 /*
  * initialize the two terminal nodes, one & zero
  */
@@ -31,11 +53,11 @@ void STree::PrintPathTerm(list<STNode*>& paths)
 {
 	for (auto it = paths.begin(), et = paths.end(); it != et; it++)
 	{
-#if PRINT_SYMBOL_NAME
-		cout << symbs[(*it)->index] << "\t";
-#elif PRINT_SYMBOL_INDEX
-		cout << (*it)->index << "\t";
-#endif
+//#if PRINT_SYMBOL_NAME
+		cout << symbs[(*it)->index]->name << "\t";
+//#elif PRINT_SYMBOL_INDEX
+	//	cout << (*it)->index << "\t";
+//#endif
 	}
 	cout << endl;
 }
@@ -100,6 +122,7 @@ void STree::PrintTerm()
 {
 	cout << "terms:" << endl;
 	PrintTermR(root);
+	cout << endl;
 }
 
 /**@} end of print stree */
@@ -120,13 +143,19 @@ pair<size_t, size_t> STree::GCMarkNode()
 		else
 			total++;
 	}
-	return make_pair<size_t, size_t> (total, cnt);
+	return pair<size_t, size_t>(total, cnt);
 }
 
 /**@{ non-recursive zero suppress & reduce & path count */
 
 void STree::ZSuppressNodeN(STNode* cn)
 {
+/*
+	cout << "current node: " << symbs[cn->index]->name << " " << cn << "\t";
+	cout << "left: " << symbs[cn->pl->index]->name << " " << cn->pl << "\t";
+	cout << "right: " << symbs[cn->pr->index]->name << " " << cn->pl << endl;
+*/
+
 	STNode* node = cn->pl;
 	if (node->index == 0)
 		cn->mark = true;
@@ -138,23 +167,44 @@ void STree::ZSuppressNodeN(STNode* cn)
 	node = cn->pr;
 	if (node->mark)
 		cn->pr = node->pr;
-
+/*
+	cout << "after zs, mark: " << cn->mark << endl;
+	cout << "current node: " << symbs[cn->index]->name << " " << cn << "\t";
+	cout << "left: " << symbs[cn->pl->index]->name << " " << cn->pl << "\t";
+	cout << "right: " << symbs[cn->pr->index]->name << " " << cn->pl << endl;
+	cout << endl;
+*/
 	return;
 }
 
 void STree::ZSuppressN()
 {
 	cout << "--- zero suppress begin..." << endl;
+	pZero->mark = true;
+	pOne->mark = false;
 
 	for (auto r_it = nodes.rbegin(), r_et = nodes.rend(); r_it != r_et; r_it++)
 	{
 		ZSuppressNodeN(*r_it);
 	}
 
+	pZero->mark = false;
+	pOne->mark = false;
 	pair<size_t, size_t> cnt = GCMarkNode();
 	cout << "... zero suppress done." << endl;
 	cout << "zero suppressed node count: " << cnt.second << endl;
 	cout << "remain node count: " << cnt.first << endl;
+/*
+	cout << "after zero suppress: " << endl;
+	for(auto it = nodes.begin(), et = nodes.end(); it != et; it++)
+	{
+		STNode* cn = *it;
+		cout << "current node: " << symbs[cn->index]->name << "\t";
+		cout << "mark: " << cn->mark << "\t";
+		cout << "left: " << symbs[cn->pl->index]->name << "\t";
+		cout << "right: " << symbs[cn->pr->index]->name << endl;
+	}
+*/
 }
 
 void STree::ReduceNodeN(STNode* cn, SharedTripleMapT& sharedTripleMap)
@@ -164,9 +214,7 @@ void STree::ReduceNodeN(STNode* cn, SharedTripleMapT& sharedTripleMap)
 	if (cn->pr->mark)
 		cn->pr = cn->pr->tdata.ps;
 
-#if TMAP | TDENSEMAP
 	cn->TripleTag();
-#endif
 
 	auto it = sharedTripleMap.insert(make_pair(cn, cn));
 	if (!it.second)
@@ -185,7 +233,7 @@ void STree::ReduceN()
 	SharedTripleMapT sharedTripleMap;
 
 #if TDENSEMAP & !TMAP
-	sharedTripleMap.set_empty_key(pZeroESTNode);
+	sharedTripleMap.set_empty_key(pZeroSTNode);
 #endif
 
 	for (auto r_it = nodes.rbegin(), r_et = nodes.rend(); r_it != r_et; r_it++)
@@ -223,6 +271,8 @@ size_t STree::CountAllPathN()
  */
 void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 {
+	cout << "build k-MST at node: " << symbs[cn->index]->name << endl;
+
 	cn->tdata.kNode = new vector<STNode*> ;
 	ValueType v = symbs[cn->index]->value;
 
@@ -239,7 +289,7 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 		tmp_v = v + (*left)[i]->value;
 		if (tmp_v < (*right)[j]->value)
 		{
-			tmp_n = new STNode(*this);
+			tmp_n = new STNode(*cn);
 			tmp_n->pl = (*left)[i];
 			tmp_n->pr = pZero;
 			tmp_n->value = tmp_v;
@@ -256,7 +306,7 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 		}
 		else
 		{
-			tmp_n = new STNode(*this);
+			tmp_n = new STNode(*cn);
 			tmp_n->pl = (*left)[i];
 			tmp_n->pr = pZero;
 			tmp_n->value = tmp_v;
@@ -272,7 +322,7 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 	while (i < m && k < KN)
 	{
 		tmp_v = v + (*left)[i]->value;
-		tmp_n = new STNode(*this);
+		tmp_n = new STNode(*cn);
 		tmp_n->pl = (*left)[i];
 		tmp_n->pr = pZero;
 		tmp_n->value = tmp_v;
@@ -287,6 +337,13 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 		j++;
 		k++;
 	}
+
+	cout << "\t";
+	for(auto it=cn->tdata.kNode->begin(),et=cn->tdata.kNode->end();it!=et;it++)
+	{
+		cout << symbs[(*it)->index]->name << "\t";
+	}
+	cout << endl;
 }
 
 void STree::BuildKPathN(size_t KN)
@@ -296,7 +353,15 @@ void STree::BuildKPathN(size_t KN)
 	pOne->tdata.kNode = new vector<STNode*> (1, pOne);
 	(*(pOne->tdata.kNode))[0]->value = 0;
 	pZero->tdata.kNode = new vector<STNode*> (1, pZero);
-	(*(pZero->tdata.kNode))[0]->value = 0;
+	(*(pZero->tdata.kNode))[0]->value = INT_MAX;
+
+	STNode* cn = pOne;
+	cout << "\t";
+	for(auto it=cn->tdata.kNode->begin(),et=cn->tdata.kNode->end();it!=et;it++)
+	{
+		cout << symbs[(*it)->index]->name << "\t";
+	}
+	cout << endl;
 
 	for (auto r_it = nodes.rbegin(), r_et = nodes.rend(); r_it != r_et; r_it++)
 	{
@@ -314,7 +379,7 @@ void STree::PrintKPath()
 	{
 		list<STNode*> paths;
 		int cnt = 0;
-		cout << "MST value: " << k_it->value << endl;
+		cout << "MST value: " << (*k_it)->value << endl;
 		cout << "path: ";
 		CollectPathTermR(*k_it, paths, cnt);
 	}
@@ -345,8 +410,13 @@ void STree::ZSuppressR()
 	bool visit = !(root->visit);
 	pZero->visit = visit;
 	pOne->visit = visit;
+	pZero->mark = true;
+	pOne->mark = false;
 
 	ZSuppressNodeR(root, visit);
+
+	pZero->mark = false;
+	pOne->mark = false;
 
 	pair<size_t, size_t> cnt = GCMarkNode();
 	cout << "... zero suppress done." << endl;
@@ -376,7 +446,7 @@ void STree::ReduceR()
 	SharedTripleMapT sharedTripleMap;
 
 #if TDENSEMAP & !TMAP
-	sharedTripleMap.set_empty_key(pZeroESTNode);
+	sharedTripleMap.set_empty_key(pZeroSTNode);
 #endif
 
 	ReduceNodeR(root, visit, sharedTripleMap);
@@ -417,9 +487,9 @@ void STree::BuildKPathNodeR(STNode* cn, bool visit, size_t KN)
 {
 	if (cn->visit != visit)
 	{
-		BuildKPathNodeR(cn->pl, visit);
-		BuildKPathNodeR(cn->pr, visit);
-		BuildKPathNodeN(cn);
+		BuildKPathNodeR(cn->pl, visit,KN);
+		BuildKPathNodeR(cn->pr, visit,KN);
+		BuildKPathNodeN(cn,KN);
 		cn->visit = visit;
 	}
 }
@@ -460,12 +530,12 @@ void STree::WorkLayerT::Clear()
 {
 	cnNodes.clear();
 	sharedNodes.clear();
-	for (auto it = graphs.begin(), et = graphs.end(); it != et; it++)
+	for (auto it = sharedGraphs.begin(), et = sharedGraphs.end(); it != et; it++)
 	{
 		delete (it->second);
 		//	(it->second) = nullptr;
 	}
-	graphs.clear();
+	sharedGraphs.clear();
 }
 
 void STree::AddNewNode(int index, STNode*& node, EGraph*& graph,
@@ -481,7 +551,9 @@ void STree::AddNewNode(int index, STNode*& node, EGraph*& graph,
 	else
 		layer.tg_cnt++;
 
-	node = new ESTNode(index, graph);
+	node = new STNode(index, graph);
+	node->NGTag();
+
 	auto nit = layer.sharedNodes.insert(make_pair(node, node));
 	if (!nit.second)
 	{
@@ -530,6 +602,8 @@ void STree::SpanBFS()
 
 	WorkLayerT layer;
 	layer.cnNodes.push_back(root);
+	layer.tg_cnt++;
+	layer.tn_cnt++;
 
 	while (!layer.cnNodes.empty())
 	{
@@ -554,12 +628,15 @@ void STree::SpanBFSByLayer()
 
 	WorkLayerT layer_0,layer_1;
 	layer_0.cnNodes.push_back(root);
+	layer_0.tg_cnt++;
+	layer_0.tn_cnt++;
+
 	while(!layer_0.cnNodes.empty() || !layer_1.cnNodes.empty())
 	{
-		auto span_layer = [](WorkLayerT& layer_0,WorkLayerT& layer_1){
+		auto span_layer = [&](WorkLayerT& layer_0,WorkLayerT& layer_1){
 			for(auto n_it=layer_0.cnNodes.begin(),n_et=layer_0.cnNodes.end();n_it!=n_et;n_it++)
 			{
-				ESTNode* cn = *n_it;
+				STNode* cn = *n_it;
 				AddLeft(cn, layer_1);
 				AddRight(cn, layer_1);
 			}
@@ -584,9 +661,6 @@ void STree::SpanBFSByLayer()
 
 void STree::Build()
 {
-	this->InitOneZero();
-	this->InitRoot();
-
 // select span strategy
 #if SPAN_BFS
 	this->SpanBFS();

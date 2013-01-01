@@ -10,12 +10,14 @@
 #include "testGraph.h"
 #include "testSymbFromFile.h"
 #include "testOrderGraph.h"
+#include "testSTree.h"
 
 #define TEST_GRAPH 0
 #define TEST_SYMB 0
 
-#define TEST_ORDER_SYMB 1
+#define TEST_ORDER_SYMB 0
 
+#define TEST_STREE 1
 
 void Test()
 {
@@ -34,6 +36,11 @@ void Test()
 #if TEST_ORDER_SYMB
 	TestOrderSymb testOrderSymb;
 	testOrderSymb.Test();
+#endif
+
+#if TEST_STREE
+	TestSTree ts;
+	ts.Test();
 #endif
 }
 

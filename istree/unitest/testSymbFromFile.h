@@ -17,7 +17,8 @@ public:
 public:
 	void Test()
 	{
-		string fname = "for_symb_test.txt";
+	//	string fname = "for_symb_test.txt";
+		string fname = "test_kmst.txt";
 		sym = SymbFromFile(fname);
 		if(!sym.CreateSymb())
 			return;

@@ -13,16 +13,13 @@
 #include "symbol.h"
 #include "graph.h"
 #include "stnode.h"
+#include "triple.h"
 
-#if TDENSEMAP
-#include <sparsehash/dense_hash_map>
-using google::dense_hash_map;
-typedef dense_hash_map STHashMap;
-#else
-#include <unordered_map>
-using std::unordered_map;
-typedef unordered_map STHashMap;
-#endif
+#define SPAN_BFS 1
+#define ZS_N 1
+#define REDUCE_N 1
+
+
 
 class STree
 {
@@ -34,10 +31,10 @@ public:
 	vector<Symbol*> symbs;
 	list<STNode*> nodes;
 
-	typedef STHashMap<EGraph*, STNode*> SharedGraphNodeMapT;
-	typedef STHashMap<EGraph*, EGraph*> SharedGraphMapT;
-	typedef STHashMap<STNode*, STNode*> SharedNodeMapT;
-	typedef STHashMap<STNode*, STNode*> SharedTripleMapT;
+//	typedef unordered_map<EGraph*, STNode*> SharedGraphNodeMapT;
+	typedef unordered_map<EGraph*, EGraph*,EGraphHash,EGraphEqual> SharedGraphMapT;
+	typedef unordered_map<STNode*, STNode*,STNodeHash,STNodeEqual> SharedNodeMapT;
+	typedef unordered_map<STNode*, STNode*,TripleHash,TripleEqual> SharedTripleMapT;
 	class WorkLayerT
 	{
 	public:
@@ -53,14 +50,11 @@ public:
 		void Clear();
 	};
 
-	STree();
+	STree()=default;
 	~STree();
 
-	void Init();
-	void InitRoot()
-	{
-
-	}
+	void Init(vector<Symbol*> symb,EGraph* graph);
+	void InitRoot(EGraph* graph);
 	/// initialize the two terminal nodes, one & zero
 	void InitOneZero();
 
@@ -87,7 +81,7 @@ public:
 	void ZSuppressNodeR(STNode* cn, bool visit);
 
 	/// count the number of spanning trees or paths recursively, begin from the root
-	size_t CountAllPathR(bool print = false);
+	size_t CountAllPathR();
 	/// count the paths for the current node, recursively
 	void CountPathNodeR(STNode* cn, bool visit);
 
@@ -123,7 +117,7 @@ public:
 	void ZSuppressNodeN(STNode* cn);
 
 	/// count the number of paths or spanning trees non-recursively, by reversely traverse the list of all nodes
-	size_t CountAllPathN(bool print = false);
+	size_t CountAllPathN();
 	/// count paths for the current node
 	void CountPathNodeN(STNode* cn);
 
