@@ -63,5 +63,7 @@ using std::hash;
 
 #include <limits.h>
 
+#include <ctime>
+using std::clock_t;
 
 #endif /* STDAFX_H_ */

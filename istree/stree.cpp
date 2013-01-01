@@ -11,13 +11,44 @@ using std::endl;
 
 #include "stree.h"
 
+STree::STree():pOne(nullptr),pZero(nullptr),knode(false),root(nullptr){}
 
 STree::~STree()
 {
+//	cout << "stree begin destroy..." << endl;
+	// symb & graph released by who created them
+	ReleaseKNode();
+	ReleaseNode();
 	// these two not in the nodes list
 	delete pZero;
 	delete pOne;
-	// symb & graph released by who created them
+//	cout << "stree destroy done." << endl;
+}
+
+void STree::ReleaseKNode()
+{
+	if(!knode)
+		return;
+//	cout << "release knode..." << endl;
+	for(auto it=nodes.begin(),et=nodes.end();it!=et;it++)
+	{
+		vector<STNode*>* vn = (*it)->tdata.kNode;
+		for(auto k_it=vn->begin(),k_et=vn->end();k_it!=k_et;k_it++)
+		{
+			if(!(*k_it)->mark)
+				delete (*k_it);
+		}
+		delete vn;
+	}
+}
+
+void STree::ReleaseNode()
+{
+//	cout << "release nodes..." << endl;
+	for(auto it=nodes.begin(),et=nodes.end();it!=et;it++)
+	{
+		delete (*it);
+	}
 }
 
 void STree::Init(vector<Symbol*> symb,EGraph* graph)
@@ -191,7 +222,7 @@ void STree::ZSuppressN()
 
 #if STAT_PRINT_ON
 	cout << "zero suppressed node count: " << cnt.second << endl;
-	cout << "remain node count: " << cnt.first << endl;
+	cout << "total node count: " << cnt.first << endl;
 #endif
 /*
 	cout << "after zero suppress: " << endl;
@@ -246,7 +277,7 @@ void STree::ReduceN()
 
 #if STAT_PRINT_ON
 	cout << "reduce node count: " << cnt.second << endl;
-	cout << "remain node count: " << cnt.first << endl;
+	cout << "total node count: " << cnt.first << endl;
 #endif
 }
 
@@ -302,6 +333,7 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 		else if (tmp_v > (*right)[j]->value)
 		{
 			tmp_n = (*right)[j];
+			tmp_n->mark = true;
 			cn->tdata.kNode->push_back(tmp_n);
 			j++;
 			k++;
@@ -316,6 +348,7 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 			i++;
 			k++;
 			tmp_n = (*right)[j];
+			tmp_n->mark = true;
 			cn->tdata.kNode->push_back(tmp_n);
 			j++;
 			k++;
@@ -335,6 +368,7 @@ void STree::BuildKPathNodeN(STNode* cn, size_t KN)
 	while (j < n && k < KN)
 	{
 		tmp_n = (*right)[j];
+		tmp_n->mark = true;
 		cn->tdata.kNode->push_back(tmp_n);
 		j++;
 		k++;
@@ -363,6 +397,7 @@ void STree::BuildKPathN(size_t KN)
 		BuildKPathNodeN(*r_it, KN);
 	}
 
+	knode = true;
 	cout << "... k-MST done." << endl;
 }
 
@@ -418,7 +453,7 @@ void STree::ZSuppressR()
 
 #if STAT_PRINT_ON
 	cout << "zero suppressed node count: " << cnt.second << endl;
-	cout << "remain node count: " << cnt.first << endl;
+	cout << "total node count: " << cnt.first << endl;
 #endif
 }
 
@@ -455,7 +490,7 @@ void STree::ReduceR()
 
 #if STAT_PRINT_ON
 	cout << "reduce node count: " << cnt.second << endl;
-	cout << "remain node count: " << cnt.first << endl;
+	cout << "total node count: " << cnt.first << endl;
 #endif
 
 }
@@ -620,9 +655,9 @@ void STree::SpanBFS()
 	cout << "-BFS build done." << endl;
 
 #if STAT_PRINT_ON
-	cout << "shared graph count: " << layer.sg_cnt << "\t";
-	cout << "total graph count:" << layer.tg_cnt << endl;
-	cout << "shared node count: " << layer.sn_cnt << "\t";
+//	cout << "shared graph count: " << layer.sg_cnt << endl;
+//	cout << "total graph count:" << layer.tg_cnt << endl;
+	cout << "shared node count: " << layer.sn_cnt << endl;
 	cout << "total node count: " << layer.tn_cnt << endl;
 #endif
 }
@@ -657,9 +692,9 @@ void STree::SpanBFSByLayer()
 	cout << "... BFS build done." << endl;
 
 #if STAT_PRINT_ON
-	cout << "shared graph count: " << layer_0.sg_cnt + layer_1.sg_cnt << "\t";
-	cout << "total graph count:" << layer_0.tg_cnt + layer_1.tg_cnt << endl;
-	cout << "shared node count: " << layer_0.sn_cnt + layer_1.sn_cnt << "\t";
+//	cout << "shared graph count: " << layer_0.sg_cnt + layer_1.sg_cnt << endl;
+//	cout << "total graph count:" << layer_0.tg_cnt + layer_1.tg_cnt << endl;
+	cout << "shared node count: " << layer_0.sn_cnt + layer_1.sn_cnt << endl;
 	cout << "total node count: " << layer_0.tn_cnt + layer_1.tn_cnt << endl;
 #endif
 }
@@ -669,6 +704,10 @@ void STree::SpanBFSByLayer()
 
 void STree::Build()
 {
+	auto calc_t = [](clock_t t1,clock_t t0)->double{return 1.0*(t1-t0)/CLOCKS_PER_SEC;};
+
+	clock_t t0 = clock();
+
 // select span strategy
 #if SPAN_BFS
 	this->SpanBFS();
@@ -678,12 +717,18 @@ void STree::Build()
 	this->SpanDFSGN();
 #endif
 
+	clock_t t1 = clock();
+	cout << "\tbuild:\t" << calc_t(t1,t0) << endl;
+
 // select zero suppress strategy
 #if ZS_N
 	this->ZSuppressN();
 #else
 	this->ZSuppressR();
 #endif
+
+	clock_t t2 = clock();
+	cout << "\tzsuppress:\t" << calc_t(t2,t1) << endl;
 
 // select reduce suppress strategy
 #if REDUCE_N
@@ -692,5 +737,10 @@ void STree::Build()
 	this->ReduceR();
 #endif
 
+	clock_t t3 = clock();
+	cout << "\treduce:\t" << calc_t(t3,t2) << endl;
+
+	cout << "timing statistics:" << endl;
+	cout << "\ttotal time:\t" << calc_t(t3,t0) << endl;
 }
 

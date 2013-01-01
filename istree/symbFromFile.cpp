@@ -8,13 +8,16 @@
 #include "symbFromFile.h"
 
 SymbFromFile::SymbFromFile(string nm):
-	fname(nm){}
+	fname(nm),graph(nullptr){}
 
 
 
 SymbFromFile::~SymbFromFile()
 {
+//	cout << "symb from file begin destroy..." << endl;
 	ReleaseSymb();
+	delete graph;
+//	cout << "symb from file destroy done." << endl;
 }
 
 
@@ -159,8 +162,9 @@ bool SymbFromFile::UpdateValue(string nm)
 	return flag;
 }
 
-void SymbFromFile::CreateGraph(EGraph* graph)
+void SymbFromFile::CreateGraph()
 {
+	graph = new EGraph;
 	for(size_t i=2,N=symbs.size();i<N;i++)
 	{
 		Symbol* symb = symbs[i];

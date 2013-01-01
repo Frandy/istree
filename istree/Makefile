@@ -24,20 +24,38 @@ SOURCES = 	graph.cpp \
 			
 TEST_MAIN = main.cpp
 
+TEST_ORDER = testOrder.cpp
+
+TEST_NORMAL = testNormal.cpp
+
 OBJECTS = $(SOURCES:.cpp=.o)
 
 TEST_MAIN_OBJECT = $(TEST_MAIN:.cpp=.o)
 
+TEST_ORDER_OBJECT = $(TEST_ORDER:.cpp=.o)
+
+TEST_NORMAL_OBJECT = $(TEST_NORMAL:.cpp=.o)
+
+
 TARGET = stree
 
+TARGET_ORDER = test_order
+
+TARGET_NORMAL = test_normal
 
 .cpp.o:
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE)
 
-all:$(TARGET)
+all:$(TARGET) $(TARGET_ORDER) $(TARGET_NORMAL)
 
 $(TARGET):$(TEST_MAIN_OBJECT) $(OBJECTS)
 	$(CC) $^ -o $@ $(LFLAGS)
+	
+$(TARGET_NORMAL):$(TEST_NORMAL_OBJECT) $(OBJECTS)
+	$(CC) $^ -o $@ $(LFLAGS)
+	
+$(TARGET_ORDER):$(TEST_ORDER_OBJECT) $(OBJECTS)
+	$(CC) $^ -o $@ $(LFLAGS)		
 	
 clean:
 	rm -rf *.o

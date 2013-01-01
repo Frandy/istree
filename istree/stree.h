@@ -21,13 +21,17 @@
 #define ZS_N 1
 #define REDUCE_N 1
 
-#define STAT_PRINT_ON 0
+#define STAT_PRINT_ON 1
+
+
 
 class STree
 {
 private:
 	STNode* pOne;
 	STNode* pZero;
+
+	bool knode;
 public:
 	STNode* root;
 	vector<Symbol*> symbs;
@@ -52,13 +56,16 @@ public:
 		void Clear();
 	};
 
-	STree()=default;
+	STree();
 	~STree();
 
 	void Init(vector<Symbol*> symb,EGraph* graph);
 	void InitRoot(EGraph* graph);
 	/// initialize the two terminal nodes, one & zero
 	void InitOneZero();
+
+	void ReleaseNode();
+	void ReleaseKNode();
 
 	/// construct spanning tree using BFS
 	void SpanBFS();

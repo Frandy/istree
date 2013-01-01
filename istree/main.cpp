@@ -12,11 +12,11 @@
 #include "testOrderGraph.h"
 #include "testSTree.h"
 
+#define TEST 1
+
 #define TEST_GRAPH 0
 #define TEST_SYMB 0
-
 #define TEST_ORDER_SYMB 0
-
 #define TEST_STREE 1
 
 void Test()
@@ -46,7 +46,10 @@ void Test()
 
 int main()
 {
+#if TEST
 	Test();
+#endif
+
 
 	return 0;
 }

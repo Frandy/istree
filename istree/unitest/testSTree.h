@@ -19,7 +19,6 @@ public:
 	{
 		TestSymbFromFile testSymb;
 		testSymb.Test();
-		EGraph* graph = new EGraph;
 
 		OrderGraph orderGraph;
 		orderGraph(testSymb.sym.symbs);
@@ -27,13 +26,13 @@ public:
 		cout << "after order symbols:" << endl;
 		testSymb.sym.Print();
 
-		testSymb.sym.CreateGraph(graph);
+		testSymb.sym.CreateGraph();
 
 		cout << "--------------- test STree ---------------" << endl;
 
 		STree st;
 
-		st.Init(testSymb.sym.symbs,graph);
+		st.Init(testSymb.sym.symbs,testSymb.sym.graph);
 
 		st.Build();
 

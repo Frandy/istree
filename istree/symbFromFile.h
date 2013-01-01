@@ -20,6 +20,7 @@ public:
 	size_t vertexnum;
 	string fname;
 	vector<Symbol*> symbs;
+	EGraph* graph;
 public:
 	// symbol created & destroyed here
 	SymbFromFile()=default;
@@ -28,7 +29,7 @@ public:
 	bool CreateSymb();
 	void ReleaseSymb();
 	bool UpdateValue(string nm);
-	void CreateGraph(EGraph* graph);
+	void CreateGraph();
 	void Print();
 private:
 	bool ReadFile();
