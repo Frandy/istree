@@ -39,6 +39,39 @@ size_t TestOrder::Test(string& name,string output)
 	return total;
 }
 
+size_t TestAnotherOrder::Test(string& name,string output)
+{
+	SymbFromFile sym(name);
+	if (!sym.CreateSymb())
+	{
+		cerr << "failed to create symbols from file " << name << endl;
+		return -1;
+	}
+
+	// output redirect to log2.txt
+	ofstream fp(output.c_str());
+	streambuf *backup = cout.rdbuf();
+	cout.rdbuf(fp.rdbuf());
+
+	OrderGraph orderGraph;
+//	orderGraph(sym.symbs);
+	orderGraph.AnotherOrderTest(sym.symbs);
+
+	sym.CreateGraph();
+
+	STree st;
+	st.Init(sym.symbs, sym.graph);
+	size_t total = st.Build();
+
+	size_t cnt = st.CountAllPathN();
+	cout << "total path count: " << cnt << endl;
+
+	cout.rdbuf(backup);
+	fp.close();
+
+	return total;
+}
+
 size_t TestNormal::Test(string& name,string output)
 {
 	SymbFromFile sym(name);

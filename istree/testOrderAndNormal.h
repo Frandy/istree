@@ -19,6 +19,12 @@ public:
 	size_t Test(string& name,string output="log2.txt");
 };
 
+class TestAnotherOrder
+{
+public:
+	size_t Test(string& name,string output="log3.txt");
+};
+
 class TestNormal
 {
 public:

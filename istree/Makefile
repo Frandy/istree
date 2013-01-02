@@ -21,6 +21,7 @@ SOURCES = 	graph.cpp \
 			symbFromFile.cpp \
 			stnode.cpp \
 			stree.cpp \
+			orderGraph.cpp \
 			testOrderAndNormal.cpp
 			
 TEST_MAIN = main.cpp
