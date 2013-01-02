@@ -136,7 +136,7 @@ public:
 	void BuildKPathNodeN(STNode* cn, size_t KN);
 
 	/// construct the stree, zero suppress and reduce
-	void Build();
+	size_t Build();
 
 	/// add new graph & node to layer
 	void AddNewNode(int index, STNode*& node, EGraph*& graph,

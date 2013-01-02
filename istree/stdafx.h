@@ -17,8 +17,10 @@ using std::cout;
 using std::endl;
 using std::cerr;
 using std::ostream;
+using std::streambuf;
 
 #include <fstream>
+using std::fstream;
 using std::ifstream;
 using std::ofstream;
 
@@ -44,6 +46,9 @@ using google::dense_hash_map;
 #include <map>
 using std::map;
 
+#include <cstdlib>
+#include <stdio.h>
+
 #include <cstddef>
 
 #include <cassert>
@@ -60,6 +65,7 @@ using std::swap;
 using std::min;
 using std::for_each;
 using std::hash;
+using std::next_permutation;
 
 #include <limits.h>
 

@@ -702,7 +702,7 @@ void STree::SpanBFSByLayer()
 
 /**@} end of construction*/
 
-void STree::Build()
+size_t STree::Build()
 {
 	auto calc_t = [](clock_t t1,clock_t t0)->double{return 1.0*(t1-t0)/CLOCKS_PER_SEC;};
 
@@ -742,5 +742,6 @@ void STree::Build()
 
 	cout << "timing statistics:" << endl;
 	cout << "\ttotal time:\t" << calc_t(t3,t0) << endl;
+	return nodes.size();
 }
 

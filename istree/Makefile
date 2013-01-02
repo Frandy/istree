@@ -20,13 +20,16 @@ SOURCES = 	graph.cpp \
 			symbol.cpp \
 			symbFromFile.cpp \
 			stnode.cpp \
-			stree.cpp 
+			stree.cpp \
+			testOrderAndNormal.cpp
 			
 TEST_MAIN = main.cpp
 
 TEST_ORDER = testOrder.cpp
 
 TEST_NORMAL = testNormal.cpp
+
+TEST_PERMUTATION = test_permutation.cpp 
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -36,6 +39,7 @@ TEST_ORDER_OBJECT = $(TEST_ORDER:.cpp=.o)
 
 TEST_NORMAL_OBJECT = $(TEST_NORMAL:.cpp=.o)
 
+TEST_PERMUTATION_OBJECT = $(TEST_PERMUTATION:.cpp=.o)
 
 TARGET = stree
 
@@ -43,10 +47,12 @@ TARGET_ORDER = test_order
 
 TARGET_NORMAL = test_normal
 
+TARGET_PERMUTATION = test_permutation
+
 .cpp.o:
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE)
 
-all:$(TARGET) $(TARGET_ORDER) $(TARGET_NORMAL)
+all:$(TARGET) $(TARGET_ORDER) $(TARGET_NORMAL) $(TARGET_PERMUTATION)
 
 $(TARGET):$(TEST_MAIN_OBJECT) $(OBJECTS)
 	$(CC) $^ -o $@ $(LFLAGS)
@@ -56,6 +62,9 @@ $(TARGET_NORMAL):$(TEST_NORMAL_OBJECT) $(OBJECTS)
 	
 $(TARGET_ORDER):$(TEST_ORDER_OBJECT) $(OBJECTS)
 	$(CC) $^ -o $@ $(LFLAGS)		
+	
+$(TARGET_PERMUTATION):$(TEST_PERMUTATION_OBJECT) $(OBJECTS)
+	$(CC) $^ -o $@ $(LFLAGS)			
 	
 clean:
 	rm -rf *.o

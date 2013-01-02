@@ -11,6 +11,8 @@
 
 #include "genGraph.h"
 
+#include "testOrderAndNormal.h"
+
 int main(int argc,char** argv)
 {
 //	string fname = "for_symb_test.txt";
@@ -25,20 +27,8 @@ int main(int argc,char** argv)
 		name = argv[1];
 	}
 
-	SymbFromFile sym(name);
-	if (!sym.CreateSymb())
-	{
-		cerr << "failed to create symbols from file " << name << endl;
-		return -1;
-	}
+	TestNormal testNormal;
+	testNormal.Test(name);
 
-	sym.CreateGraph();
-
-	STree st;
-	st.Init(sym.symbs, sym.graph);
-	st.Build();
-
-	size_t cnt = st.CountAllPathN();
-	cout << "total path count: " << cnt << endl;
 	return 0;
 }
