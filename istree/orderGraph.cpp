@@ -186,3 +186,59 @@ void OrderGraph::ReIndexV(vector<Symbol*>& symbs,unordered_map<string, int>& vIn
 		symb->vn = vIndex[symb->sn];
 	}
 }
+
+void OrderGraph::ThirdOrder(vector<Symbol*>& symbs,unordered_map<string,list<Symbol*> >& vertexs,unordered_map<string, int>& vIndex)
+{
+	int vn = vertexs.size() - 1;
+	int ek = 2;
+	unordered_map<string,bool> vHist;
+	while(vn>=0)
+	{
+		vit_t mit;
+		FindMinDeg(mit,vertexs);
+		vIndex.insert(pair<string,int>(mit->first,vn));
+		vn--;
+
+		typedef pair<pair<int,size_t>,Symbol*> localNode;
+		vector<localNode> localOrder;
+		for(auto e_it=mit->second.begin(),e_et=mit->second.end();e_it!=e_et;e_it++)
+		{
+			Symbol* symb = *e_it;
+			string s = symb->sp;
+			if(mit->first==s)
+				s = symb->sn;
+			list<Symbol*>& tmp_symbs = vertexs[s];
+			int his = 0;
+			auto his_it = vHist.find(s);
+			if(his_it!=vHist.end())
+				his = -1;
+			else
+				vHist.insert(pair<string,bool>(s,true));
+
+			tmp_symbs.remove(symb);
+			localOrder.push_back(pair<pair<int,size_t>,Symbol*>(pair<int,size_t>(his,tmp_symbs.size()),symb));
+		}
+		vHist.insert(pair<string,bool>(mit->first,true));
+		vertexs.erase(mit);
+
+		auto localNodeLess = [](const localNode& a,const localNode& b)->bool{return a.first<b.first;};
+		sort(localOrder.begin(),localOrder.end(),localNodeLess);
+		for(auto l_it=localOrder.begin(),l_et=localOrder.end();l_it!=l_et;l_it++)
+		{
+			l_it->second->ei = ek;
+			symbs[ek] = l_it->second;
+			ek++;
+		}
+	}
+}
+
+
+void OrderGraph::ThirdOrderTest(vector<Symbol*>& symbs)
+{
+	unordered_map<string,list<Symbol*> > vertexs;
+	unordered_map<string, int> vIndex;
+
+	Init(symbs,vertexs);
+	ThirdOrder(symbs,vertexs,vIndex);
+	ReIndexV(symbs,vIndex);
+}

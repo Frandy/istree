@@ -23,6 +23,7 @@ size_t TestOrder::Test(string& name,string output)
 
 	OrderGraph orderGraph;
 	orderGraph(sym.symbs);
+//	sym.Print();
 
 	sym.CreateGraph();
 
@@ -55,7 +56,9 @@ size_t TestAnotherOrder::Test(string& name,string output)
 
 	OrderGraph orderGraph;
 //	orderGraph(sym.symbs);
-	orderGraph.AnotherOrderTest(sym.symbs);
+//	orderGraph.AnotherOrderTest(sym.symbs);
+	orderGraph.ThirdOrderTest(sym.symbs);
+//	sym.Print();
 
 	sym.CreateGraph();
 

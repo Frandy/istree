@@ -26,6 +26,10 @@ public:
 
 	void AnotherOrderTest(vector<Symbol*>& symbs);
 
+	void ThirdOrderTest(vector<Symbol*>& symbs);
+
+	void ThirdOrder(vector<Symbol*>& symbs,unordered_map<string,list<Symbol*> >& vertexs,unordered_map<string, int>& vIndex);
+
 	void AddVertex(string& s,Symbol* symb, unordered_map<string,list<Symbol*> >& vertexs);
 
 	void Init(vector<Symbol*>& symbs, unordered_map<string,list<Symbol*> >& vertexs);
