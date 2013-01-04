@@ -39,11 +39,15 @@ public:
 		Dis dise(emin,emax);
 		tenum = dise(gen);
 	*/
-		Dis disv(13, 17);
+	//	Dis disv(5, 7);
+		Dis disv(13, 18);
 		tvnum = disv(gen);
 		// sparse
-		Dis dist(24, 34);
+	//	Dis dist(10, 20);
+		Dis dist(28, 40);
 		tenum = dist(gen);
+	//	if(tenum<tvnum+5)
+	//		tenum = tvnum + 6;
 	/*	int sparse = dist(gen);
 		tenum = tvnum * (tvnum - 1) / 2 * sparse / 100;
 		if(tenum<1.5*tvnum || tenum>4.5*tvnum)
@@ -99,7 +103,7 @@ public:
 
 		for(auto it=eArray.begin(),et=eArray.end();it!=et;it++)
 		{
-			fp << it->index << " " << it->vp << " " << it->vn << " " << vdis(gen)<< endl;
+			fp << "e"<< it->index << " " << it->vp << " " << it->vn << " " << vdis(gen)<< endl;
 		}
 	}
 	void Run()

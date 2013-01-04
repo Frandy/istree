@@ -20,7 +20,7 @@
 class OrderGraph
 {
 private:
-	typedef typename unordered_map<string,list<Symbol*> >::iterator vit_t;
+	typedef typename unordered_map<string, list<Symbol*> >::iterator vit_t;
 public:
 	void operator()(vector<Symbol*>& symbs);
 
@@ -28,21 +28,41 @@ public:
 
 	void ThirdOrderTest(vector<Symbol*>& symbs);
 
-	void ThirdOrder(vector<Symbol*>& symbs,unordered_map<string,list<Symbol*> >& vertexs,unordered_map<string, int>& vIndex);
+	void ThirdOrder(vector<Symbol*>& symbs,
+			unordered_map<string, list<Symbol*> >& vertexs,
+			unordered_map<string, int>& vIndex);
 
-	void AddVertex(string& s,Symbol* symb, unordered_map<string,list<Symbol*> >& vertexs);
+	void FourthOrderTest(vector<Symbol*>& symbs);
+	void FourthOrder(vector<Symbol*>& symbs,
+			unordered_map<string, list<Symbol*> >& vertexs,
+			unordered_map<string, int>& vIndex);
 
-	void Init(vector<Symbol*>& symbs, unordered_map<string,list<Symbol*> >& vertexs);
+	void FindMinDegHist(vit_t& mit,
+			unordered_map<string, list<Symbol*> >& vertexs,
+			unordered_map<string, bool>& vHist);
+	void FifthOrderTest(vector<Symbol*>& symbs);
+	void FifthOrder(vector<Symbol*>& symbs,
+			unordered_map<string, list<Symbol*> >& vertexs,
+			unordered_map<string, int>& vIndex);
 
-	void FindMinDeg(vit_t& mit,unordered_map<string,list<Symbol*> >& vertexs);
+	void AddVertex(string& s, Symbol* symb,
+			unordered_map<string, list<Symbol*> >& vertexs);
 
-	void ReOrder(vector<Symbol*>& symbs,unordered_map<string,list<Symbol*> >& vertexs,unordered_map<string, int>& vIndex);
+	void Init(vector<Symbol*>& symbs,
+			unordered_map<string, list<Symbol*> >& vertexs);
 
-	void AnotherOrder(vector<Symbol*>& symbs,unordered_map<string,list<Symbol*> >& vertexs,unordered_map<string, int>& vIndex);
+	void FindMinDeg(vit_t& mit, unordered_map<string, list<Symbol*> >& vertexs);
 
-	void ReIndexV(vector<Symbol*>& symbs,unordered_map<string, int>& vIndex);
+	void ReOrder(vector<Symbol*>& symbs,
+			unordered_map<string, list<Symbol*> >& vertexs,
+			unordered_map<string, int>& vIndex);
+
+	void AnotherOrder(vector<Symbol*>& symbs,
+			unordered_map<string, list<Symbol*> >& vertexs,
+			unordered_map<string, int>& vIndex);
+
+	void ReIndexV(vector<Symbol*>& symbs, unordered_map<string, int>& vIndex);
 
 };
-
 
 #endif /* ORDERGRAPH_H_ */

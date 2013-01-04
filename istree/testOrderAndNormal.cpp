@@ -58,6 +58,7 @@ size_t TestAnotherOrder::Test(string& name,string output)
 //	orderGraph(sym.symbs);
 //	orderGraph.AnotherOrderTest(sym.symbs);
 	orderGraph.ThirdOrderTest(sym.symbs);
+//	orderGraph.FourthOrderTest(sym.symbs);
 //	sym.Print();
 
 	sym.CreateGraph();
@@ -74,6 +75,44 @@ size_t TestAnotherOrder::Test(string& name,string output)
 
 	return total;
 }
+
+size_t TestFourthOrder::Test(string& name,string output)
+{
+	SymbFromFile sym(name);
+	if (!sym.CreateSymb())
+	{
+		cerr << "failed to create symbols from file " << name << endl;
+		return -1;
+	}
+
+	// output redirect to log2.txt
+	ofstream fp(output.c_str());
+	streambuf *backup = cout.rdbuf();
+	cout.rdbuf(fp.rdbuf());
+
+	OrderGraph orderGraph;
+//	orderGraph(sym.symbs);
+//	orderGraph.AnotherOrderTest(sym.symbs);
+//	orderGraph.ThirdOrderTest(sym.symbs);
+//	orderGraph.FourthOrderTest(sym.symbs);
+	orderGraph.FifthOrderTest(sym.symbs);
+//	sym.Print();
+
+	sym.CreateGraph();
+
+	STree st;
+	st.Init(sym.symbs, sym.graph);
+	size_t total = st.Build();
+
+	size_t cnt = st.CountAllPathN();
+	cout << "total path count: " << cnt << endl;
+
+	cout.rdbuf(backup);
+	fp.close();
+
+	return total;
+}
+
 
 size_t TestNormal::Test(string& name,string output)
 {
@@ -167,11 +206,20 @@ void TestPermutation::Test(string name)
 		sprintf(buf, "%d", permutation.cnt);
 		string log1_name = "permutation_res/match/log1_" + string(buf) + ".txt";
 		string log2_name = "permutation_res/match/log2_" + string(buf) + ".txt";
-		string for_symb_name = "permutation_res/" + name + string(buf);
+		string log3_name = "permutation_res/match/log3_" + string(buf) + ".txt";
+		string log4_name = "permutation_res/match/log4_" + string(buf) + ".txt";
+		string for_symb_name = "permutation_res/graph/" + name + string(buf);
 
 		cout << "--- stree with order begin..." << endl;
 		TestOrder testOrder;
 		testOrder.Test(name,log2_name);
+
+		TestAnotherOrder testAn;
+		testAn.Test(name,log3_name);
+
+		TestFourthOrder test4;
+		test4.Test(name,log4_name);
+
 		cout << "... stree with order done." << endl;
 
 		cout << "--- stree normal begin..." << endl;

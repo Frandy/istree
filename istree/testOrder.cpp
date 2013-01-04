@@ -33,5 +33,8 @@ int main(int argc,char** argv)
 	TestAnotherOrder testAn;
 	testAn.Test(name);
 
+	TestFourthOrder test4;
+	test4.Test(name);
+
 	return 0;
 }
